@@ -8,6 +8,7 @@
     "url": "https://github.com/laeo/getx-pro.git"
   },
   "license": "MIT",
+  "publisher": "laeo",
   "engines": {
     "vscode": "^1.78.0"
   },
