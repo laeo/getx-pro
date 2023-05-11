@@ -2,7 +2,7 @@
   "name": "getx-pro",
   "displayName": "GetXPro",
   "description": "Use GetX like a Pro.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.78.0"
   },
