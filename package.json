@@ -3,6 +3,11 @@
   "displayName": "GetXPro",
   "description": "Use GetX like a Pro.",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laeo/getx-pro.git"
+  },
+  "license": "MIT",
   "engines": {
     "vscode": "^1.78.0"
   },
