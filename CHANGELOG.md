@@ -2,8 +2,16 @@
 
 All notable changes to the "getx-pro" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## v1.1.1
 
-## [Unreleased]
+- Add extension logo
+
+## v1.1.0
+
+- Add responsive view generation
+- Add auto_route page generation
+- Update extension metadata
+
+## v1.0.0
 
 - Initial release
