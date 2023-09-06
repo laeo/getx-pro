@@ -28,6 +28,10 @@
       {
         "command": "getx-pro.create-responsive-page",
         "title": "GetX Pro: Create Responsive Page"
+      },
+      {
+        "command": "getx-pro.create-autoroute-page",
+        "title": "GetX Pro: Create Page ➕ AutoRoute"
       }
     ],
     "menus": {
@@ -41,6 +45,11 @@
           "command": "getx-pro.create-responsive-page",
           "group": "2_getx",
           "when": "explorerResourceIsFolder"
+        },
+        {
+          "command": "getx-pro.create-autoroute-page",
+          "group": "2_getx",
+          "when": "explorerResourceIsFolder"
         }
       ],
       "commandPalette": [
@@ -50,6 +59,10 @@
         },
         {
           "command": "getx-pro.create-responsive-page",
+          "when": "false"
+        },
+        {
+          "command": "getx-pro.create-autoroute-page",
           "when": "false"
         }
       ]

@@ -74,6 +74,40 @@ export function activate(context: vscode.ExtensionContext) {
 			writeFileSync(join(folder, `${name}_view_phone.dart`), createView(name, dartClass, 'Phone'));
 		});
 	});
+
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('getx-pro.create-autoroute-page', (args) => {
+		if (!args.path) {
+			vscode.window.showErrorMessage('Right click on folder name to specific whether to create page');
+			return;
+		}
+
+		// The code you place here will be executed every time your command is executed
+		// Display a message box to the user
+		vscode.window.showInputBox({ placeHolder: 'Page name (Must be snake_case, eg: user_profile)' }).then(name => {
+			if (!name) {
+				return;
+			}
+
+			const folder = join(args.path, name);
+
+			if (existsSync(folder)) {
+				vscode.window.showErrorMessage(`${folder} already exists.`);
+				return;
+			}
+
+			mkdirSync(folder);
+
+			const dartClass = pascalCase(name);
+			writeFileSync(join(folder, `${name}_state.dart`), createState(dartClass));
+			writeFileSync(join(folder, `${name}_logic.dart`), createLogic(name, dartClass));
+			writeFileSync(join(folder, `${name}_view.dart`), createView(name, dartClass));
+			writeFileSync(join(folder, `${name}_page.dart`), createAutoRoutePage(name, dartClass));
+		});
+	});
+
+	context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
@@ -130,6 +164,28 @@ class ${dartClass}View extends GetResponsiveView<${dartClass}Logic> {
 	@override
 	Widget? desktop() {
 		return const ${dartClass}ViewDesktop();
+	}
+}`;
+}
+
+function createAutoRoutePage(filename: string, dartClass: string) {
+	return `import 'package:auto_route/auto_route.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/state_manager.dart';
+
+import '${filename}_logic.dart';
+import '${filename}_view.dart';
+
+@RoutePage()
+class ${dartClass}Page extends StatelessWidget {
+	const ${dartClass}Page({super.key});
+
+	@override
+	Widget build(BuildContext context) {
+		return GetBuilder(
+			init: ${dartClass}Logic(),
+			builder: (controller) => const ${dartClass}View(),
+		);
 	}
 }`;
 }
