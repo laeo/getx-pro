@@ -46,6 +46,34 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('getx-pro.create-responsive-page', (args) => {
+		if (!args.path) {
+			vscode.window.showErrorMessage('No target folder specified.');
+			return;
+		}
+
+		vscode.window.showInputBox({ placeHolder: 'Page name (Must be snake_case, eg: user_profile)' }).then(name => {
+			if (!name) {
+				return;
+			}
+
+			const folder = join(args.path, name);
+			if (existsSync(folder)) {
+				vscode.window.showErrorMessage(`${folder} already exists.`);
+				return;
+			}
+
+			mkdirSync(folder);
+
+			const dartClass = pascalCase(name);
+			writeFileSync(join(folder, `${name}_state.dart`), createState(dartClass));
+			writeFileSync(join(folder, `${name}_logic.dart`), createLogic(name, dartClass));
+			writeFileSync(join(folder, `${name}_view.dart`), createResponsiveView(name, dartClass));
+			writeFileSync(join(folder, `${name}_view_desktop.dart`), createView(name, dartClass, 'Desktop'));
+			writeFileSync(join(folder, `${name}_view_phone.dart`), createView(name, dartClass, 'Phone'));
+		});
+	});
 }
 
 // This method is called when your extension is deactivated
@@ -66,19 +94,42 @@ class ${dartClass}Logic extends GetxController {
 }`;
 }
 
-function createView(filename: string, dartClass: string) {
+function createView(filename: string, dartClass: string, dartClassSuffix: string = '') {
 	return `import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '${filename}_logic.dart';
 
-class ${dartClass}View extends GetView<${dartClass}Logic> {
-	const ${dartClass}View({super.key});
+class ${dartClass}View${dartClassSuffix} extends GetView<${dartClass}Logic> {
+	const ${dartClass}View${dartClassSuffix}({super.key});
 
 	@override
 	Widget build(BuildContext context) {
 		// TODO: implement build
 		throw UnimplementedError();
+	}
+}`;
+}
+
+function createResponsiveView(filename: string, dartClass: string) {
+	return `import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '${filename}_logic.dart';
+import '${filename}_view_desktop.dart';
+import '${filename}_view_phone.dart';
+
+class ${dartClass}View extends GetResponsiveView<${dartClass}Logic> {
+	${dartClass}View({super.key});
+
+	@override
+	Widget? phone() {
+		return const ${dartClass}ViewPhone();
+	}
+
+	@override
+	Widget? desktop() {
+		return const ${dartClass}ViewDesktop();
 	}
 }`;
 }
